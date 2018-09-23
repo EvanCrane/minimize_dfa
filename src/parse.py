@@ -1,4 +1,5 @@
 import os
+from dfa import Dfa
 
 def parseMain():
     print("Running Main")
@@ -49,3 +50,19 @@ def printText(text):
 
 def printDfaInput(states, alpha, transfunc, start, final):
     print(states + "/n" + alpha + "/n" + transfunc + "/n" + start + "/n" + final)  
+
+def parseDfaStrings(stringList):
+    dfaList = []
+    for str in stringList:
+        splitList = str.split(', ')
+        first, rest = splitList[0], splitList[1:]
+        content = rest[0][:-1]
+        print(content)
+        dfaList.append(content)
+    dfa = Dfa()
+
+def parseStates(stateStr):
+    items = []
+    for item in stateStr
+        if item == '(':
+            content, closeParen = 
