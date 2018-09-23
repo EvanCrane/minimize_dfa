@@ -3,9 +3,11 @@ from src.parse import parseMain
 
 def main():
     parsedDfa = parseMain()
-    return parsedDfa
-
-def vdir(obj):
-    return [x for x in dir(obj) if not x.startswith('__')]
-
+    print("DFA PARSE RESULTS")
+    print(parsedDfa.states)
+    print(parsedDfa.alpha)
+    print(parsedDfa.transfunc)
+    print(parsedDfa.start)
+    print(parsedDfa.final)
+    print("Finished Main.....")
 main()

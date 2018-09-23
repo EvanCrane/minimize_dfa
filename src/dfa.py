@@ -5,5 +5,8 @@ class Dfa:
         self.transfunc = transfunc
         self.start = start
         self.final = final
-    def defineDfa(self):
+    def printDfa(self):
         print(vdir(self))
+
+def vdir(obj):
+    return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
