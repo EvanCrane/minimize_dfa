@@ -1,6 +1,7 @@
 import src
 from src.parse import parseMain
 from src.prettyPrint import prettyPrintMain
+from src.verifyDfa import verifyDfaMain
 
 def main():
     parsedDfa = parseMain()
@@ -10,6 +11,12 @@ def main():
     print(parsedDfa.transfunc)
     print(parsedDfa.start)
     print(parsedDfa.final)
-    print("Finished Main.....")
-    prettyPrintMain(parsedDfa)
+    print("Verifying DFA...")
+    result = verifyDfaMain(parsedDfa)
+    if result:
+        prettyPrintMain(parsedDfa)
+        print("Finished Main.....")
+    else:
+        print("DFA cannot be verified!!")
+
 main()
