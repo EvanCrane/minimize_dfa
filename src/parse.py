@@ -68,18 +68,9 @@ def parseDfaStrings(fileLines):
                 dfaList.append(parseListOfLists(content))
             elif 'start' in first:
                 dfaList.append(content)
-            elif 'alpha' in first:
-                dfaList.append(parseSingle(content))
             elif 'states' in first or 'alpha' in first or 'final' in first:
                 dfaList.append(parseList(content))        
     return dfaList
-
-def parseSingle(content):
-    if len(content) > 1:
-        print("ERROR: Alphabet symbol is longer than one character!")
-        return "ERROR"
-    else:
-        return content
 
 def parseList(content):
     if content.startswith('(') and content.endswith(')'):

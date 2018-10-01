@@ -1,5 +1,6 @@
 import src
 from src.parse import parseMain
+from src.prettyPrint import prettyPrintMain
 
 def main():
     parsedDfa = parseMain()
@@ -10,4 +11,5 @@ def main():
     print(parsedDfa.start)
     print(parsedDfa.final)
     print("Finished Main.....")
+    prettyPrintMain(parsedDfa)
 main()
