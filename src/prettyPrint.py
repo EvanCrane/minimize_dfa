@@ -1,6 +1,7 @@
 from src.dfa import Dfa
 
-def prettyPrintMain(dfa):
+
+def pretty_print_main(dfa):
     dfaList = []
     dfaList.append(states(dfa.states))
     dfaList.append(alpha(dfa.alpha))
@@ -11,15 +12,18 @@ def prettyPrintMain(dfa):
     for str in dfaList:
         print(str)
 
+
 def states(listObj):
     s1 = ','.join(listObj)
     str = '(states, (' + s1 + '))'
     return str
 
+
 def alpha(listObj):
     s1 = ','.join(listObj)
     str = '(alpha, (' + s1 + '))'
     return str
+
 
 def trans(listoflistObj):
     transList = []
@@ -30,9 +34,11 @@ def trans(listoflistObj):
     str = '(trans-func, (' + s2 + ')'
     return str
 
+
 def start(strObj):
     str = '(start, ' + strObj + ')'
     return str
+
 
 def final(listObj):
     s1 = ','.join(listObj)

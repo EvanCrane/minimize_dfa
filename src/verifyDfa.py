@@ -1,27 +1,27 @@
 from src.dfa import Dfa
 
-def verifyDfaMain(dfa):
+def verify_dfa_main(dfa):
     results = []
-    results.append(verifyStates(dfa.states))
-    results.append(verifyAlpha(dfa.alpha))
-    results.append(verifyTrans(dfa.transfunc, dfa.start, dfa.final, dfa.states, dfa.alpha))
-    results.append(verifyStart(dfa.start, dfa.states))
-    results.append(verifyFinal(dfa.final, dfa.states))
+    results.append(verify_states(dfa.states))
+    results.append(verify_alpha(dfa.alpha))
+    results.append(verify_trans(dfa.transfunc, dfa.start, dfa.final, dfa.states, dfa.alpha))
+    results.append(verify_start(dfa.start, dfa.states))
+    results.append(verify_final(dfa.final, dfa.states))
     if False in results:
         return False
     else:
         return True
 
-def verifyStates(states):
+def verify_states(states):
     return True
 
-def verifyAlpha(alpha):
+def verify_alpha(alpha):
     if len(alpha) > 1:
         return False
     else:
         return True
 
-def verifyTrans(trans, start, final, states, alpha):
+def verify_trans(trans, start, final, states, alpha):
     result = False
     #Compare trans to make sure they are in the states
     #Also compare trans to make sure that alphabet symbols are contained in alphabet
@@ -46,12 +46,12 @@ def verifyTrans(trans, start, final, states, alpha):
         
     return result
 
-def verifyStart(start, states):
+def verify_start(start, states):
     if len(start) > 1 or start not in states:
         return False
     else:
         return True
-def verifyFinal(final, states):
+def verify_final(final, states):
     if len(final) > 1 or final not in states:
         return False
     else:

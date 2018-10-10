@@ -1,8 +1,9 @@
 import src
 from src.parse import parseMain
 from src.parsefile import parse_main
-from src.prettyPrint import prettyPrintMain
+from src.prettyPrint import pretty_print_main
 from src.verifyDfa import verifyDfaMain
+
 
 def main():
     print("EVENT: Running main...")
@@ -16,9 +17,10 @@ def main():
     print("EVENT: Verifying DFA...")
     result = verifyDfaMain(parsedDfa)
     if result:
-        prettyPrintMain(parsedDfa)
+        pretty_print_main(parsedDfa)
         print("EVENT: Finished Main.....")
     else:
         print("VERIFY ERROR: DFA cannot be verified!!")
+
 
 main()
