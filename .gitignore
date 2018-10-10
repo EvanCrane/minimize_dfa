@@ -2,3 +2,4 @@
 *.pyc
 #IDE related
 .vscode/settings.json
+.vscode/launch.json
