@@ -2,11 +2,11 @@ from src.dfa import Dfa
 
 def verifyDfaMain(dfa):
     results = []
-    results.append = verifyStates(dfa.states)
-    results.append = verifyAlpha(dfa.alpha)
-    results.append = verifyTrans(dfa.transfunc, dfa.start, dfa.final, dfa.states, dfa.alpha)
-    results.append = verifyStart(dfa.start, dfa.states)
-    results.append = verifyFinal(dfa.final, dfa.states)
+    results.append(verifyStates(dfa.states))
+    results.append(verifyAlpha(dfa.alpha))
+    results.append(verifyTrans(dfa.transfunc, dfa.start, dfa.final, dfa.states, dfa.alpha))
+    results.append(verifyStart(dfa.start, dfa.states))
+    results.append(verifyFinal(dfa.final, dfa.states))
     if False in results:
         return False
     else:
