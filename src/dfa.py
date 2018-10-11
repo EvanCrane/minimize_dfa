@@ -9,16 +9,43 @@ class Dfa:
     def printDfa(self):
         print(vdir(self))
 
+    def to_state_objects(self):
+        states = []
+        position = 0
+        for state in self.states:
+            is_start = False
+            is_final = False
+            if state == self.start:
+                is_start = True
+            if state in self.final:
+                is_final = True
+            trans_list = []
+            for sublist in self.transfunc:
+                if state in sublist[0]:
+                    del sublist[0]
+                    trans_list.append(sublist)
+            state_obj = State(state, is_start, is_final, trans_list, position)
+            states.append(state_obj)
+            position += 1
+        return states
+
 
 class State:
-    def __init__(self, name, is_start, is_final, transitions):
+    def __init__(self, name, is_start, is_final, transitions, position):
         self.name = name
         self.is_start = is_start
         self.is_final = is_final
         self.transitions = transitions
+        self.position = position
 
     def printState(self):
         print(vdir(self))
+
+    def combine_states(self, state_combinations):
+        return state
+
+    def states_to_dfa(self):
+        return dfa
 
 class MinSet:
     def __init__(self, designation, number, states, has_start, has_final):
@@ -34,21 +61,3 @@ class MinSet:
 
 def vdir(obj):
     return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
-
-def dfa_to_state_set(dfa):
-    states = set()
-    for state in dfa.states:
-        is_start = False
-        is_final = False
-        if state == dfa.start:
-            is_start = True
-        if state in dfa.final:
-            is_final = True
-        trans_list = []
-        for sublist in dfa.transfunc:
-            if state in sublist[0]:
-                del sublist[0]
-                trans_list.append(sublist)
-        state_obj = State(state, is_start, is_final, trans_list)
-        states.add(state_obj)
-    return states

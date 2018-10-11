@@ -4,6 +4,7 @@ from src.parse import parseMain
 from src.parsefile import parse_main
 from src.prettyPrint import pretty_print_main
 from src.verifyDfa import verify_dfa_main
+from src.minimize import minimize_main
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
         print("VERIFY ERROR: DFA cannot be verified!!")
 
 def main2():
-    print("EVENT: Running main...")
+    print("EVENT: Running main2...")
     parsedDfa = parse_main()
     print("EVENT: DFA PARSE RESULTS")
     print(parsedDfa.states)
@@ -33,7 +34,7 @@ def main2():
     print(parsedDfa.start)
     print(parsedDfa.final)
     print("EVENT: Converting DFA to set of State Objects...")
-    result = dfa_to_state_set(parsedDfa)
-    print(result)
+    min_result = minimize_main(parsedDfa)
+    print(min_result)
 
 main2()
