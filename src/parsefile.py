@@ -1,5 +1,6 @@
 import os
 import re
+from src.error import print_error
 from src.dfa import Dfa
 
 
