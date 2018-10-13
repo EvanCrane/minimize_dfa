@@ -13,19 +13,14 @@ def minimize_main(dfa):
     distinct = initialize_table(len(states))
     if distinct is None:
         return None
-    print_table(distinct)
     new_distinct = zero_equiv(distinct, states)
     if new_distinct is None:
         return None
-    print_table(new_distinct)
     finished_distinct = n_equiv(new_distinct, dfa.alpha, states)
     if finished_distinct is None:
         return None
-    print_table(finished_distinct)
     matches = find_matches(finished_distinct, states)
     if len(matches) == 0:
-        print("RESULT: Could not find any matches in the table algorithm. Returning original DFA...")
-        print("RESULT: This Dfa cannot be minimized...")
         return dfa
     unions = union_matches(matches, states)
     new_states = combine_states(unions, states)
@@ -114,8 +109,6 @@ def update_table(distinct, states, alphas):
                     elif is_distinct == None:
                         print_error("MINIMIZING", "update_table",
                                     "Issue getting the distinct result for the transitions of p and q")
-    print("DONE WITH ITERATION")
-    print_table(new_distinct)
     return new_distinct
 
 
