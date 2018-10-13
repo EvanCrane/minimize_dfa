@@ -1,3 +1,5 @@
+from src.verify import verify_state_objects_main
+
 class Dfa:
     def __init__(self, states, alpha, transfunc, start, final):
         self.states = states
@@ -41,11 +43,11 @@ class State:
     def printState(self):
         print(vdir(self))
 
-    def combine_states(self, state_combinations):
-        return state
+    #def combine_states(self, combinations):
+    #    for 
+    #    return states
 
-    def states_to_dfa(self):
-        return dfa
+    
 
 class MinSet:
     def __init__(self, designation, number, states, has_start, has_final):
@@ -61,3 +63,32 @@ class MinSet:
 
 def vdir(obj):
     return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
+
+def states_to_dfa(state_list, alpha):
+    if not (verify_state_objects_main(state_list)):
+        return None
+    else:
+        states = []
+        transfunc = []
+        start = None
+        final = []
+        state_list.sort()
+        start_state = [s for s in state_list if s.is_start]
+        start = start_state.name
+        states.append(start_state.name)
+        for state in state_list:
+            if state.is_start:
+                break
+            elif state.is_final:
+                final.append(state.name)
+            states.append(state.name)
+            sub_trans = []
+            for trans in state.transitions:
+                sub_trans.append(state.name)
+                sub_trans + list(trans)
+                transfunc.append(sub_trans)
+
+
+        dfa_min = Dfa(states, alpha, transfunc, start, final)
+        return dfa_min
+
