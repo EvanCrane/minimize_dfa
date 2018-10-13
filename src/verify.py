@@ -37,7 +37,9 @@ def verify_states(states, start, final):
         return False
 
 def verify_alpha(alpha):
-    # At least one
+    if len(alpha) == 0:
+        return True
+
     # Verify that alpha is alphanumeric
     # No duplicates
     if ( 
@@ -57,6 +59,8 @@ def verify_trans(trans, start, final, states, alpha):
     #Every transition output is a member of the set of states
     #For each alphabet letter for a state there can only be one output per letter.
     #Start and final states need to exist 
+    if len(trans) == 0:
+        return True
     start_check = False
     final_check = False
     for items in trans:
@@ -70,8 +74,6 @@ def verify_trans(trans, start, final, states, alpha):
         ):
             if set(first).issubset(first):
                 start_check = True
-            if set(last).issubset(final):
-                final_check = True
         else:
             print_error("VERIFY", "verify_trans", "transitions do not meet the correct conditions")
             return False
@@ -79,7 +81,7 @@ def verify_trans(trans, start, final, states, alpha):
     for state in states:
         for als in alpha:
             match = [a for a in trans if state in a[0] and als in a[1]]
-        if len(match) == 1 and start_check and final_check:
+        if len(match) == 1 and start_check:
             return True
         else:
             print_error("VERIFY", "verify_trans", "transitions do not meet the correct conditions")
@@ -106,13 +108,16 @@ def verify_final(final, states):
     #Alphanumeric
     #Final states must have no duplicates
     #Final states are a subset of states
-    if (
-        len(final) >= 1 and 
-        all(e.isalnum() for e in final) and
-        len(final) == len(set(final)) and 
-        set(final).issubset(states)
-    ):
-        return True
+    if len(final) > 0:
+        if (
+            len(final) >= 1 and 
+            all(e.isalnum() for e in final) and
+            len(final) == len(set(final)) and 
+            set(final).issubset(states)
+        ):
+            return True
+        else:
+            print_error("VERIFY", "verify_final", "final does not meet the correct conditions")
+            return False
     else:
-        print_error("VERIFY", "verify_final", "final does not meet the correct conditions")
-        return False
+        return True

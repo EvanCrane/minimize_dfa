@@ -76,6 +76,8 @@ def rip_off_parens(str):
     if str.startswith('(') and str.endswith(')'):
         outer_paren = re.compile("\((.+)\)")
         res = outer_paren.search(str)
+        if res == None:
+            return None
         return res.group(1)
     else:
         print("ERROR: invalid content in separated list")
@@ -95,6 +97,8 @@ def parse_alpha(str):
     if str.startswith('alpha,'):
         content = str.lstrip('alpha,')
         dfa_str = rip_off_parens(content)
+        if dfa_str == None:
+            return []
         split_list = dfa_str.split(',')
         return split_list
     else:
@@ -138,6 +142,8 @@ def parse_final(str):
     if str.startswith('final,'):
         content = str.lstrip('final,')
         dfa_str = rip_off_parens(content)
+        if dfa_str == None:
+            return []
         split_list = dfa_str.split(',')
         return split_list
     else:

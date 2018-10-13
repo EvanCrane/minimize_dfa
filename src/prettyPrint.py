@@ -50,13 +50,22 @@ def trans(listoflistObj, alpha):
 
 
 def start(strObj):
-    str = '(start, ' + strObj + ')'
-    str = str.replace("'", "")
-    return str
+        if type(strObj) is list:
+                s1 = ','.join(strObj)
+                s1 = s1.replace("'","")
+        else:
+                s1 = strObj.replace("'","")
+        str = '(start, ' + s1 + ')'
+        str = str.replace("'", "")
+        return str
 
 
 def final(listObj):
-    s1 = ','.join(listObj)
-    str = '(final, (' + s1 + '))'
-    str = str.replace("'", "")
-    return str
+    if len(listObj) > 0:
+        s1 = ','.join(listObj)
+        str = '(final, (' + s1 + '))'
+        str = str.replace("'", "")
+        return str
+    else:
+        str = '(final, ( ))'
+        return str
