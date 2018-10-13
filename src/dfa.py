@@ -1,5 +1,6 @@
 from src.verify import verify_state_objects_main
 
+
 class Dfa:
     def __init__(self, states, alpha, transfunc, start, final):
         self.states = states
@@ -43,11 +44,10 @@ class State:
     def printState(self):
         print(vdir(self))
 
-    #def combine_states(self, combinations):
-    #    for 
+    # def combine_states(self, combinations):
+    #    for
     #    return states
 
-    
 
 class MinSet:
     def __init__(self, designation, number, states, has_start, has_final):
@@ -63,6 +63,7 @@ class MinSet:
 
 def vdir(obj):
     return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
+
 
 def states_to_dfa(state_list, alpha):
     if not (verify_state_objects_main(state_list)):
@@ -88,7 +89,5 @@ def states_to_dfa(state_list, alpha):
                 sub_trans + list(trans)
                 transfunc.append(sub_trans)
 
-
         dfa_min = Dfa(states, alpha, transfunc, start, final)
         return dfa_min
-

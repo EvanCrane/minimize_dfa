@@ -23,6 +23,7 @@ def main():
     else:
         print("VERIFY ERROR: DFA cannot be verified!!")
 
+
 def main2():
     print("EVENT: Running main2...")
     parsedDfa = parse_main()
@@ -34,5 +35,6 @@ def main2():
     print(parsedDfa.final)
     print("EVENT: Converting DFA to set of State Objects...")
     minimize_main(parsedDfa)
+
 
 main2()
