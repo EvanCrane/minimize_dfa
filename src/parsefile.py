@@ -1,12 +1,13 @@
 import os
+import sys
 import re
 from src.error import print_error
 from src.dfa import Dfa
 
 
-def parse_main():
+def parse_main(full_path):
     print("EVENT: Running parse_main()")
-    file_content = read_file_string()
+    file_content = read_file_string(full_path)
     if (verify_dfa_components(file_content)):
         content = remove_whitespace(file_content)
         print(content)
@@ -14,14 +15,16 @@ def parse_main():
             separate_dfa_components(content)))
         return parsed_dfa
 
-
-def read_file_string():
-    path = "test1.dfa"
-    file = open(path, 'r')
-    file_content = file.read()
-    file.close()
-    return file_content
-
+def read_file_string(full_path):
+    try:
+        path = full_path
+        file = open(path, 'r')
+        file_content = file.read()
+        file.close()
+        return file_content
+    except:
+        print_error("PARSE", "read_file_string()",
+            "There was an exception caught when trying to read in the file provided")
 
 def verify_dfa_components(file_content):
     if (
