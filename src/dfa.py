@@ -9,28 +9,12 @@ class Dfa:
         self.start = start
         self.final = final
 
-    def printDfa(self):
-        print(vdir(self))
+    def __copy__(self):
+        return Dfa(self.states, self.alpha, self.transfunc,
+            self.start, self.final)
 
-    def to_state_objects(self):
-        states = []
-        position = 0
-        for state in self.states:
-            is_start = False
-            is_final = False
-            if state == self.start:
-                is_start = True
-            if state in self.final:
-                is_final = True
-            trans_list = []
-            for sublist in self.transfunc:
-                if state in sublist[0]:
-                    del sublist[0]
-                    trans_list.append(sublist)
-            state_obj = State(state, is_start, is_final, trans_list, position)
-            states.append(state_obj)
-            position += 1
-        return states
+    def print_dfa(self):
+        print(vdir(self))
 
 
 class State:
@@ -41,7 +25,7 @@ class State:
         self.transitions = transitions
         self.position = position
 
-    def printState(self):
+    def print_state(self):
         print(vdir(self))
 
     # def combine_states(self, combinations):
@@ -64,6 +48,25 @@ class MinSet:
 def vdir(obj):
     return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
 
+def dfa_to_states(d_states, d_trans, d_start, d_final):
+        states = []
+        position = 0
+        for state in d_states:
+            is_start = False
+            is_final = False
+            if state == d_start:
+                is_start = True
+            if state in d_final:
+                is_final = True
+            trans_list = []
+            for sub_list in d_trans:
+                if state in sub_list[0]:
+                    sublist = sub_list[1:]
+                    trans_list.append(sublist)
+            state_obj = State(state, is_start, is_final, trans_list, position)
+            states.append(state_obj)
+            position += 1
+        return states
 
 def states_to_dfa(state_list, alpha):
     from src.verify import verify_state_objects_main

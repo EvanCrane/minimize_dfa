@@ -4,6 +4,7 @@ from src.parsefile import parse_main
 from src.prettyPrint import pretty_print_main
 from src.verify import verify_dfa_main
 from src.minimize import minimize_main
+from src.error import print_error
 
 
 def main():
@@ -34,7 +35,12 @@ def main2():
     print(parsedDfa.start)
     print(parsedDfa.final)
     print("EVENT: Converting DFA to set of State Objects...")
-    minimize_main(parsedDfa)
-
-
+    dfa = minimize_main(parsedDfa)
+    if dfa is None:
+        print_error("MAIN", "main()",
+            "Got a null result from minimization. Error Minimizing this DFA!")
+    print("EVENT: Pretty printing DFA...")
+    print("RESULT: DFA")
+    pretty_print_main(dfa)
+    
 main2()

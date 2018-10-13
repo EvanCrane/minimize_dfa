@@ -8,7 +8,6 @@ def pretty_print_main(dfa):
     dfaList.append(trans(dfa.transfunc))
     dfaList.append(start(dfa.start))
     dfaList.append(final(dfa.final))
-    print("Pretty printing DFA...")
     for str in dfaList:
         print(str)
 

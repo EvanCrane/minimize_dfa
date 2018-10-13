@@ -3,11 +3,12 @@ import src
 from src.error import print_error
 from src.dfa import Dfa
 from src.dfa import State
+from src.dfa import dfa_to_states
 from src.dfa import states_to_dfa
 
 
 def minimize_main(dfa):
-    states = dfa.to_state_objects()
+    states = dfa_to_states(dfa.states, dfa.transfunc, dfa.start, dfa.final)
     distinct = initialize_table(len(states))
     if distinct is None:
         return None
@@ -21,6 +22,9 @@ def minimize_main(dfa):
         return None
     print_table(finished_distinct)
     matches = find_matches(finished_distinct, states)
+    if len(matches) == 0:
+        print("RESULT: Could not find any matches in the table algorithm. Returning original DFA...")
+        return dfa
     unions = union_matches(matches, states)
     new_states = combine_states(unions, states)
     dfa_min = states_to_dfa(new_states, dfa.alpha)
@@ -84,25 +88,27 @@ def n_equiv(distinct, alphas, states):
         nonlocal alphas
         nonlocal states
         if a_index is not None:
-            print("EVENT: n_equiv(): alpha (index,letter): ("
-                  + str(a_index) + "," + alphas[a_index] + ")")
             # do all the other loops
             if a_index < len(alphas):
+                print("EVENT: n_equiv(): alpha (index,letter): ("
+                  + str(a_index) + "," + alphas[a_index] + ")")
                 new_distinct = update_table(distinct, states, alphas[a_index])
                 a_index += 1
                 print_table(new_distinct)
                 _helper_equiv(new_distinct, a_index)
             else:
                 _helper_equiv(distinct, None)
-        else:
-            # Were done here
-            return distinct
+        # Were done here
+        return distinct
 
     # do the first time loop
     a_index = 0
     new_distinct = update_table(distinct, states, alphas[a_index])
     a_index += 1
     return _helper_equiv(new_distinct, a_index)
+    
+
+    
 
 
 def update_table(distinct, states, alpha):
