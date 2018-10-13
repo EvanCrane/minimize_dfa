@@ -1,9 +1,8 @@
 import src
-from src.dfa import dfa_to_state_set
 from src.parse import parseMain
 from src.parsefile import parse_main
 from src.prettyPrint import pretty_print_main
-from src.verifyDfa import verify_dfa_main
+from src.verify import verify_dfa_main
 from src.minimize import minimize_main
 
 
@@ -34,7 +33,6 @@ def main2():
     print(parsedDfa.start)
     print(parsedDfa.final)
     print("EVENT: Converting DFA to set of State Objects...")
-    min_result = minimize_main(parsedDfa)
-    print(min_result)
+    minimize_main(parsedDfa)
 
 main2()

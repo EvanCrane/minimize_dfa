@@ -56,3 +56,9 @@ def verify_final(final, states):
         return False
     else:
         return True
+
+def verify_state_objects_main(state_list):
+    start_state = [s for s in state_list if s.is_start]
+    if start_state == 1:
+        return True
+    return False
