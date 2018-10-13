@@ -80,12 +80,6 @@ def set_finals(distinct, final_indexes, non_final_indexes):
 
 
 def n_equiv(distinct, alphas, states):
-    # do the first time loop
-    a_index = 0
-    new_distinct = update_table(distinct, states, alphas[a_index])
-    a_index += 1
-    return _helper_equiv(new_distinct, a_index)
-
     def _helper_equiv(distinct, a_index):
         nonlocal alphas
         nonlocal states
@@ -103,6 +97,12 @@ def n_equiv(distinct, alphas, states):
         else:
             # Were done here
             return distinct
+
+    # do the first time loop
+    a_index = 0
+    new_distinct = update_table(distinct, states, alphas[a_index])
+    a_index += 1
+    return _helper_equiv(new_distinct, a_index)
 
 
 def update_table(distinct, states, alpha):
@@ -248,5 +248,5 @@ def compare_table(distinct, old_distinct, states):
 
 def print_table(distinct):
     print("EVENT: Printing table...")
-    for row in reversed(distinct):
+    for row in distinct:
         print(row)

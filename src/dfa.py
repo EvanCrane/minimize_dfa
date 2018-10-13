@@ -1,4 +1,4 @@
-from src.verify import verify_state_objects_main
+import src
 
 
 class Dfa:
@@ -66,6 +66,7 @@ def vdir(obj):
 
 
 def states_to_dfa(state_list, alpha):
+    from src.verify import verify_state_objects_main
     if not (verify_state_objects_main(state_list)):
         return None
     else:
