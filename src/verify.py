@@ -15,6 +15,7 @@ def verify_dfa_main(dfa):
         print_error("VERIFY", "verify_dfa_main()", "Parsed DFA did not meet verification conditions")
         return False
     else:
+        print("EVENT: Succesful DFA verification")
         return True
 
 
@@ -115,10 +116,3 @@ def verify_final(final, states):
     else:
         print_error("VERIFY", "verify_final", "final does not meet the correct conditions")
         return False
-
-
-def verify_state_objects_main(state_list):
-    start_state=[s for s in state_list if s.is_start]
-    if start_state == 1:
-        return True
-    return False

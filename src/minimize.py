@@ -1,4 +1,5 @@
 # minimize.py
+from copy import copy, deepcopy
 import src
 from src.error import print_error
 from src.dfa import Dfa
@@ -24,6 +25,7 @@ def minimize_main(dfa):
     matches = find_matches(finished_distinct, states)
     if len(matches) == 0:
         print("RESULT: Could not find any matches in the table algorithm. Returning original DFA...")
+        print("RESULT: This Dfa cannot be minimized...")
         return dfa
     unions = union_matches(matches, states)
     new_states = combine_states(unions, states)
@@ -84,72 +86,50 @@ def set_finals(distinct, final_indexes, non_final_indexes):
 
 
 def n_equiv(distinct, alphas, states):
-    def _helper_equiv(distinct, a_index):
-        nonlocal alphas
-        nonlocal states
-        if a_index is not None:
-            # do all the other loops
-            if a_index < len(alphas):
-                print("EVENT: n_equiv(): alpha (index,letter): ("
-                  + str(a_index) + "," + alphas[a_index] + ")")
-                new_distinct = update_table(distinct, states, alphas[a_index])
-                a_index += 1
-                print_table(new_distinct)
-                _helper_equiv(new_distinct, a_index)
-            else:
-                _helper_equiv(distinct, None)
-        # Were done here
-        return distinct
-
     # do the first time loop
-    a_index = 0
-    new_distinct = update_table(distinct, states, alphas[a_index])
-    a_index += 1
-    return _helper_equiv(new_distinct, a_index)
-    
+    new_distinct = update_table(distinct, states, alphas)
+    if new_distinct != distinct:
+        t1 = deepcopy(new_distinct)
+        t2 = deepcopy(distinct[:])
+        while t1 != t2:
+            result = update_table(t1, states, alphas)
+            t2 = deepcopy(t1)
+            t1 = deepcopy(result)
+        return t1
+    return new_distinct
 
-    
 
-
-def update_table(distinct, states, alpha):
-    completed_list = []
-    for col in range(len(distinct)):
-        for row in range(len(distinct)):
-            complete = False
-            if col == row or distinct[row][col] == 'X':
-                break
-            if distinct[row][col] == 1:
-                completed_list.append((col, row))
-                break
-            for tup in completed_list:
-                if col in tup and row in tup:
-                    complete = True
-                    break
-            if complete is True:
-                break
-            if distinct[row][col] == 0:
-                parent = [s for s in states if s.position == col]
-                child = [s for s in states if s.position == row]
-                is_distinct = compare_states(
-                    parent, child, states, alpha, distinct)
-                completed_list.append((col, row))
-                if is_distinct:
-                    distinct[row][col] = 1
-                elif not is_distinct:
-                    distinct[row][col] = 0
-                else:
-                    print_error("MINIMIZING", "update_table",
-                                "Issue getting the distinct result for the transitions of p and q")
-    return distinct
+def update_table(distinct, states, alphas):
+    new_distinct = deepcopy(distinct)
+    for alpha in alphas:
+        for col in range(len(new_distinct)):
+            for row in range(len(new_distinct)):
+                if new_distinct[row][col] == 0:
+                    parent = [s for s in states if s.position == col]
+                    child = [s for s in states if s.position == row]
+                    is_distinct = compare_states(
+                        parent[0], child[0], states, alpha, new_distinct)
+                    if is_distinct:
+                        new_distinct[row][col] = 1
+                    elif is_distinct == None:
+                        print_error("MINIMIZING", "update_table",
+                                    "Issue getting the distinct result for the transitions of p and q")
+    print("DONE WITH ITERATION")
+    print_table(new_distinct)
+    return new_distinct
 
 
 def compare_states(parent, child, states, alpha, distinct):
     p_delta = trans_output(parent.transitions, alpha)
     q_delta = trans_output(child.transitions, alpha)
-    p_index = [s for s in states if s.name == p_delta].position
-    q_index = [s for s in states if s.name == q_delta].position
+    p_index = [s for s in states if s.name == p_delta][0].position
+    q_index = [s for s in states if s.name == q_delta][0].position
     if distinct[q_index][p_index] != "X":
-        return distinct[q_index][p_index]
+        is_distinct = distinct[q_index][p_index]
+        return is_distinct
+    elif distinct[p_index][q_index] != "X":
+        is_distinct = distinct[p_index][p_index]
+        return is_distinct
     else:
         return None
 
@@ -157,7 +137,7 @@ def compare_states(parent, child, states, alpha, distinct):
 def trans_output(transitions, alpha):
     output = transitions[[i for i,
                           j in enumerate(transitions)
-                          if j[0] == 2][0]][-1]
+                          if j[0] == alpha][0]][-1]
     return output
 
 
@@ -168,7 +148,7 @@ def find_matches(distinct, states):
             if distinct[row][col] == 0:
                 p_state = [s for s in states if s.position == col]
                 q_state = [s for s in states if s.position == row]
-                sub_match = frozenset([p_state, q_state])
+                sub_match = frozenset([p_state[0], q_state[0]])
                 matches.add(sub_match)
     return matches
 
@@ -176,12 +156,18 @@ def find_matches(distinct, states):
 def union_matches(matches, states):
     unions = set()
     for state in states:
-        state_set = [s for s in matches if state.name in s]
+        state_set = [s for s in matches if state in s]
         union_matches = set()
-        for item in state_set:
-            union_matches = union_matches.union(item)
-        frozen_union = frozenset(union_matches)
-        unions.add(frozen_union)
+        if len(state_set) > 0:
+            for item in state_set:
+                union_matches = union_matches.union(item)
+            frozen_union = frozenset(union_matches)
+            unions.add(frozen_union)
+        else:
+            singleton_set = set()
+            singleton_set.add(state)
+            frozen_singleton = frozenset(singleton_set)
+            unions.add(frozen_singleton)
     return unions
 
 
@@ -189,67 +175,56 @@ def combine_states(unions, states):
     pre_trans_states = set()
     is_final = False
     is_start = False
-    # Kind of pointless to note position at this point by why not track it
-    position = 0
+
     for sub_sets in unions:
         if len(sub_sets) > 1:
             state_name = []
             state_trans = []
+            position = None
             for state in sub_sets:
                 if state.is_start:
                     is_start = True
                 if state.is_final:
                     is_final = True
+                if position == None:
+                    position = state.position
+                elif position > state.position:
+                    position = state.position
                 state_name.append(state.name)
                 state_trans.append(state.transitions)
             pre_trans_state = State(
-                state_name, is_start, is_final, None, position)
+                sorted(state_name), is_start, is_final, None, position)
             pre_trans_states.add(pre_trans_state)
-            position += 1
         else:
-            x, = sub_sets
-            new_state = [s for s in states if s.name == x]
-            if len(new_state) != 0:
+            new_state, = sub_sets
+            if new_state == None:
                 print_error("MINIMIZING", "combine_states()",
                             "The singleton does not exist in the original states")
                 return None
-            new_state.position = position
-            position += 1
             pre_trans_states.add(new_state)
     new_states = combine_trans(pre_trans_states, states)
     return new_states
 
-# TODO States names NEED to be strings in order for this function to work
-
 
 def combine_trans(pre_trans_states, states):
     new_states = []
+    combined_states = [s for s in pre_trans_states if type(s.name) is list]
     for pt_state in pre_trans_states:
-        grouped_state = [s for s in states if set(pt_state.name).issuperset(s)]
-        if len(grouped_state) == 1:
-            new_transitions = [tuple(s[-1] if not set(s).issubset(pt_state.name)
-                                     else pt_state.name for s in tup)
-                               for tup in grouped_state]
-            new_state = pt_state.transitions(new_transitions)
-            new_states.append(new_state)
-        elif len(grouped_state) > 1:
-            new_transitions = [tuple(s[-1] if not set(s).issubset(pt_state.name)
-                                     else pt_state.name for s in tup)
-                               for tup in grouped_state[0]]
-            new_state = pt_state.transitions(new_transitions)
-            new_states.append(new_state)
-        else:
-            new_states.append(None)
-            print_error("MINIMIZING", "combine_trans()",
-                        "There was a problem grouping transition states")
+        n_state = deepcopy(pt_state)
+        for state in states:
+            if state.name in pt_state.name:
+                new_transitions = []
+                for item in state.transitions:
+                    change_flag = False
+                    for c_s in combined_states:
+                        if set(item[-1]).issubset(c_s.name):
+                            new_transitions.append([item[0], c_s.name])
+                            change_flag = True
+                    if not change_flag:
+                        new_transitions.append(item)
+        n_state.transitions = new_transitions
+        new_states.append(n_state)
     return new_states
-
-
-def compare_table(distinct, old_distinct, states):
-    is_changed = True
-    if distinct == old_distinct:
-        is_changed = False
-    return is_changed
 
 
 def print_table(distinct):

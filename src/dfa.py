@@ -1,4 +1,4 @@
-import src
+
 
 
 class Dfa:
@@ -11,7 +11,7 @@ class Dfa:
 
     def __copy__(self):
         return Dfa(self.states, self.alpha, self.transfunc,
-            self.start, self.final)
+                   self.start, self.final)
 
     def print_dfa(self):
         print(vdir(self))
@@ -28,70 +28,54 @@ class State:
     def print_state(self):
         print(vdir(self))
 
-    # def combine_states(self, combinations):
-    #    for
-    #    return states
-
-
-class MinSet:
-    def __init__(self, designation, number, states, has_start, has_final):
-        self.designation = designation
-        self.number = number
-        self.has_start = has_start
-        self.has_final = has_final
-        self.states = states
-
-    def printMinSet(self):
-        print(vdir(self))
-
 
 def vdir(obj):
     return [x for x in dir(obj) if not x.startswith('__') and not x.startswith('print')]
 
+
 def dfa_to_states(d_states, d_trans, d_start, d_final):
-        states = []
-        position = 0
-        for state in d_states:
-            is_start = False
-            is_final = False
-            if state == d_start:
-                is_start = True
-            if state in d_final:
-                is_final = True
-            trans_list = []
-            for sub_list in d_trans:
-                if state in sub_list[0]:
-                    sublist = sub_list[1:]
-                    trans_list.append(sublist)
-            state_obj = State(state, is_start, is_final, trans_list, position)
-            states.append(state_obj)
-            position += 1
-        return states
+    states = []
+    position = 0
+    for state in d_states:
+        is_start = False
+        is_final = False
+        if state == d_start:
+            is_start = True
+        if state in d_final:
+            is_final = True
+        trans_list = []
+        for sub_list in d_trans:
+            if state in sub_list[0]:
+                sublist = sub_list[1:]
+                trans_list.append(sublist)
+        state_obj = State(state, is_start, is_final, trans_list, position)
+        states.append(state_obj)
+        position += 1
+    return states
+
 
 def states_to_dfa(state_list, alpha):
-    from src.verify import verify_state_objects_main
-    if not (verify_state_objects_main(state_list)):
-        return None
-    else:
-        states = []
-        transfunc = []
-        start = None
-        final = []
-        state_list.sort()
-        start_state = [s for s in state_list if s.is_start]
-        start = start_state.name
-        states.append(start_state.name)
-        for state in state_list:
-            if state.is_start:
-                break
-            elif state.is_final:
-                final.append(state.name)
-            states.append(state.name)
+    import operator
+    states = []
+    transfunc = []
+    start = None
+    final = []
+    state_list.sort(key=operator.attrgetter('position'))
+    start_state = [s for s in state_list if s.is_start]
+    start = start_state[0].name
+    str_start_name = str(start_state[0].name)
+    states.append(str_start_name)
+    for state in state_list:
+        str_name = str(state.name)
+        if state.is_final:
+            final.append(str_name)
+        if not state.is_start:
+            states.append(str_name)
+        for trans in state.transitions:
             sub_trans = []
-            for trans in state.transitions:
-                sub_trans.append(state.name)
-                sub_trans + list(trans)
-                transfunc.append(sub_trans)
+            sub_trans.append(state.name)
+            sub_trans += list(trans)
+            transfunc.append(str(sub_trans))
 
-        dfa_min = Dfa(states, alpha, transfunc, start, final)
-        return dfa_min
+    dfa_min = Dfa(states, alpha, transfunc, start, final)
+    return dfa_min

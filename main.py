@@ -40,7 +40,14 @@ def main():
             print_error("MINIMIZE", "main()", "DFA cannot be minimized!!")
             print("EVENT: Finished Main.....")
             return exit(1)
-        pretty_print_main(parsedDfa)
+        else:
+            pretty_print_main(dfa_min)
+            #result2 = verify_dfa_main(dfa_min)
+            #if result2:
+            #    pretty_print_main(parsedDfa)
+            #else:
+            #    print_error(
+            #        "VERIFY", "main()", "Minimized DFA could not be verified. Something went wrong in the minimization process")
     else:
         print_error("VERIFY", "main()", "DFA cannot be verified!!")
     print("EVENT: Finished Main.....")
