@@ -99,7 +99,7 @@ def update_table(distinct, states, alphas):
     for alpha in alphas:
         for col in range(len(new_distinct)):
             for row in range(len(new_distinct)):
-                if new_distinct[row][col] == 0:
+                if new_distinct[row][col] == 0 and row != col:
                     parent = [s for s in states if s.position == col]
                     child = [s for s in states if s.position == row]
                     is_distinct = compare_states(
@@ -123,6 +123,8 @@ def compare_states(parent, child, states, alpha, distinct):
     elif distinct[p_index][q_index] != "X":
         is_distinct = distinct[p_index][p_index]
         return is_distinct
+    elif p_index == q_index:
+        return 0
     else:
         return None
 
